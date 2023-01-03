@@ -29,6 +29,8 @@ namespace DavisSylvester
             {
                 MessageBody = messageBody,
                 QueueUrl = queueUrl,
+                MessageGroupId = "foo",
+                MessageDeduplicationId = "aaaa"
             };
 
             var response = await client.SendMessageAsync(request);
