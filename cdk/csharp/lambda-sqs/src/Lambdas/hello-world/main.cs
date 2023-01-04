@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using System;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
