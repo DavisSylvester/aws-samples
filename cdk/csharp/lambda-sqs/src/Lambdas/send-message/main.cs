@@ -21,7 +21,7 @@ namespace DavisSylvester
             context.Logger.LogLine($"Received {apigProxyEvent}");
 
             string messageBody = "This is a sample message to send to the example queue.";
-            string queueUrl = "https://sqs.us-east-1.amazonaws.com/313327262346/test-davis-one.fifo";
+            string queueUrl = $"https://sqs.us-east-1.amazonaws.com/{Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT")}/test-davis-one.fifo";
 
             IAmazonSQS client = new AmazonSQSClient();
 

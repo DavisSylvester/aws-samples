@@ -13,6 +13,7 @@
     <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.2.0" />
     <PackageReference Include="AWSXRayRecorder.Core" Version="2.10.1" />
     <PackageReference Include="AWSXRayRecorder.Handlers.AwsSdk" Version="2.8.3" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.100.46" />
   </ItemGroup>
 
   

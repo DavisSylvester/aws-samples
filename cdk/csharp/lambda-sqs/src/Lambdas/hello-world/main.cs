@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using Amazon.SQS;
+using Amazon.SQS.Model;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -13,20 +15,68 @@ namespace DavisSylvester
     public class HelloWorld
     {
 
-        public APIGatewayHttpApiV2ProxyResponse Run(APIGatewayHttpApiV2ProxyRequest apigProxyEvent,
+        public async Task<APIGatewayHttpApiV2ProxyResponse> Run(APIGatewayHttpApiV2ProxyRequest apigProxyEvent,
      ILambdaContext context)
         {
             context.Logger.LogLine($"Received {apigProxyEvent}");
 
-            return new APIGatewayHttpApiV2ProxyResponse
+            context.Logger.LogInformation($"CONTEXT EVENT:  {context}");
+
+            var msg  = JsonSerializer.Serialize(new
+                {
+                    Message = context
+                });
+
+            var result = await sendMessage(msg);
+
+            return result;
+        }
+
+        private async Task<APIGatewayHttpApiV2ProxyResponse> sendMessage(string message)
+        {
+            
+            string queueUrl = $"https://sqs.us-east-1.amazonaws.com/${Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT")}/test-davis-two";
+
+            IAmazonSQS client = new AmazonSQSClient();
+
+            var request = new SendMessageRequest
+            {
+                MessageBody = message,
+                QueueUrl = queueUrl,
+                MessageGroupId = "foo",
+                MessageDeduplicationId = "aaaa"
+            };
+
+            var response = await client.SendMessageAsync(request);
+
+            if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
+            {  
+                return new APIGatewayHttpApiV2ProxyResponse
             {
                 Body = JsonSerializer.Serialize(new
                 {
-                    Message = "Hello World"
+                    Message = $"Successfully sent message. Message ID: {response.MessageId}"
                 }),
                 StatusCode = 200,
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
+            }
+            else
+            {
+                // Console.WriteLine("Could not send message.");
+
+                return new APIGatewayHttpApiV2ProxyResponse
+            {
+                Body = JsonSerializer.Serialize(new
+                {
+                    Message = "Could not send message."
+                }),
+                StatusCode = 400,
+                Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+            };
+            }
         }
     }
+
+
 }

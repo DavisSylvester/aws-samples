@@ -64,6 +64,9 @@ namespace HelloCdk
             testQueue.GrantSendMessages(sendMessageFunction);
             testQueue.GrantConsumeMessages(helloWorldFunction);
 
+            testQueueTwo.GrantSendMessages(sendMessageFunction);
+            testQueueTwo.GrantConsumeMessages(helloWorldFunction);
+
             var api = new LambdaRestApi(this, "Hello_World_APIGateway", new LambdaRestApiProps
             {
                 Handler = helloWorldFunction,
