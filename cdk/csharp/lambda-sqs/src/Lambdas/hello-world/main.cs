@@ -36,7 +36,7 @@ namespace DavisSylvester
         private async Task<APIGatewayHttpApiV2ProxyResponse> sendMessage(string message)
         {
             
-            string queueUrl = $"https://sqs.us-east-1.amazonaws.com/${Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT")}/test-davis-two";
+            string queueUrl = $"https://sqs.us-east-1.amazonaws.com/313327262346/test-davis-two";
 
             IAmazonSQS client = new AmazonSQSClient();
 
@@ -44,8 +44,7 @@ namespace DavisSylvester
             {
                 MessageBody = message,
                 QueueUrl = queueUrl,
-                MessageGroupId = "foo",
-                MessageDeduplicationId = "aaaa"
+                
             };
 
             var response = await client.SendMessageAsync(request);

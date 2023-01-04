@@ -4,8 +4,7 @@ using Constructs;
 using Amazon.CDK;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.APIGateway;
-using Amazon.CDK.AWS.IAM;
-using System.Collections.Generic;
+using System;
 
 namespace HelloCdk
 {
@@ -46,7 +45,10 @@ namespace HelloCdk
                 Handler = "helloWorld::DavisSylvester.HelloWorld::Run",
                 Timeout = Duration.Seconds(15),
                 MemorySize = 512,
-                FunctionName = "Hello-World"
+                FunctionName = "Hello-World",
+                Environment = {
+                    // ["CDK_DEFAULT_ACCOUNT"] = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT")
+                }
             }
             );
 
@@ -57,14 +59,17 @@ namespace HelloCdk
                 Handler = "sendMessage::DavisSylvester.SendMessage::Run",
                 Timeout = Duration.Seconds(15),
                 MemorySize = 512,
-                FunctionName = "Send-Message"
+                FunctionName = "Send-Message",
+                Environment = {
+                    // ["CDK_DEFAULT_ACCOUNT"] = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT")
+                }
             }
             );
 
             testQueue.GrantSendMessages(sendMessageFunction);
             testQueue.GrantConsumeMessages(helloWorldFunction);
 
-            testQueueTwo.GrantSendMessages(sendMessageFunction);
+            testQueueTwo.GrantSendMessages(helloWorldFunction);
             testQueueTwo.GrantConsumeMessages(helloWorldFunction);
 
             var api = new LambdaRestApi(this, "Hello_World_APIGateway", new LambdaRestApiProps
